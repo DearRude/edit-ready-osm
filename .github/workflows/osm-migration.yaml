@@ -23,6 +23,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - name: Harden Runner # Basic security hardening
@@ -64,7 +66,7 @@ jobs:
             database: openstreetmap_test # Use the DB defined in the service env
             username: runner             # Use the user defined in the service env
             password: password           # Use the password defined in the service env
-            host: postgres             # Use the service hostname ('postgres')
+            host: localhost             
 
           test:
             adapter: postgresql
@@ -72,7 +74,7 @@ jobs:
             database: openstreetmap_test # Use the same DB for simplicity
             username: runner
             password: password
-            host: postgres
+            host: localhost
 
           # Minimal production block, won't be used by this workflow's migrate/test steps
           production:
@@ -85,33 +87,6 @@ jobs:
           cat config/database.yml # Print the generated file content to the log for verification
           echo "-------------------------------------"
 
-      - name: Install Ruby Dependencies
-        working-directory: ./openstreetmap-website
-        # Relies on bundler-cache from setup-ruby step
-        run: bundle check || bundle install --jobs 4 --retry 3
-
-      - name: Wait for Service DNS and Port
-        run: |
-          echo "Waiting for postgres service DNS and port..."
-          # Loop until DNS resolves and port is connectable
-          count=0
-          while ! nc -zv postgres 5432 && [ $count -lt 15 ]; do
-            echo "Postgres service not ready yet (DNS or Port 5432)... attempt: $((count+1))/15"
-            sleep 2 # Wait 2 seconds before retrying
-            count=$((count+1))
-          done
-
-          if [ $count -eq 15 ]; then
-            echo "Timed out waiting for postgres service!"
-            echo "--- Attempting DNS lookup ---"
-            nslookup postgres || echo "nslookup failed"
-            dig postgres || echo "dig failed"
-            getent hosts postgres || echo "getent failed"
-            echo "--- Checking port again ---"
-            nc -zv postgres 5432 || echo "Netcat check still failing"
-            exit 1
-          fi
-          echo "Postgres service DNS resolved and port 5432 is open."
 
       - name: Run Database Migrations
         working-directory: ./openstreetmap-website
