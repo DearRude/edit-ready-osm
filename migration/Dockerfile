@@ -16,31 +16,11 @@ ENV DEBIAN_FRONTEND=noninteractive \
     POSTGRES_DB=postgres
 
 # Install build dependencies, Ruby 3.2+, git, OSM dependencies, and locales
-RUN apt-get update \
-  && apt-get install --no-install-recommends -y \
-    build-essential \
-    curl \
-    default-jre-headless \
-    file \
-    git-core \
-    gpg-agent \
-    libarchive-dev \
-    libffi-dev \
-    libgd-dev \
-    # libpq-dev is usually included in postgis images or dependencies
-    libsasl2-dev \
-    libvips-dev \
-    libxml2-dev \
-    libxslt1-dev \
-    libyaml-dev \
-    locales \
-    postgresql-client \
-    ruby3.2 \
-    ruby3.2-dev \
-    ruby-bundler \
-    tzdata \
-    unzip \
-    osmosis \
+RUN apt-get install ruby ruby-dev ruby-bundler \
+  libvips-dev libxml2-dev libxslt1-dev \
+  build-essential git-core \
+  postgresql postgresql-contrib libpq-dev libsasl2-dev \
+  libffi-dev libgd-dev libarchive-dev libyaml-dev libbz2-dev \
   # Configure locales
   && locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 \
