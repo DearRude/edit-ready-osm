@@ -45,10 +45,20 @@ jobs:
       - name: Install System Dependencies (Git, Postgres Client)
         run: |
           sudo apt-get update -y && sudo apt-get install -y --no-install-recommends \
-            git \
+            build-essential \
+            git-core \
+            libvips-dev \
+            libxml2-dev \
+            libxslt1-dev \
             postgresql-client \
-            libpq-dev
-
+            libpq-dev \
+            libsasl2-dev \
+            libffi-dev \
+            libgd-dev \
+            libarchive-dev \
+            libyaml-dev \
+            libbz2-dev
+            
       - name: Clone OpenStreetMap Website
         run: git clone --depth=1 https://github.com/openstreetmap/openstreetmap-website.git
 
