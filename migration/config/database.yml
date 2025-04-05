@@ -1,0 +1,10 @@
+# Use environment variables or direct values matching the PostGIS container
+# We set RAILS_ENV=production in the Dockerfile
+production:
+  adapter: postgresql
+  database: openstreetmap # The name rails will try to create/migrate
+  username: postgres      # Matches default user in postgis/postgis image
+  password: postgres      # Matches default password (or use env var)
+  host: localhost         # Connect to the DB running in the *same* container
+  encoding: utf8
+  # pool: 5 # Optional: Adjust pool size if needed

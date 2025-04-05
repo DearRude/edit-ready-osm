@@ -1,0 +1,14 @@
+# Using local disk storage within the container for the build process.
+# This config might be irrelevant for just running migrations, but include it for completeness.
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+local:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
+
+# Add production entry if needed, likely mirroring 'local' for this context
+production:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
