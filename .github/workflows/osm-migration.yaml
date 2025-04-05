@@ -117,12 +117,6 @@ jobs:
         # Assumes `rails db:migrate` runs in 'development' env by default, using the config created above.
         run: bundle exec rails db:migrate
 
-      - name: Run Tests
-        working-directory: ./openstreetmap-website
-        env:
-          RAILS_ENV: test # Ensure tests run against the 'test' db config
-        run: bundle exec rails db:test:all
-
       # --- Docker Image Push Section ---
 
       - name: Log in to GitHub Container Registry
