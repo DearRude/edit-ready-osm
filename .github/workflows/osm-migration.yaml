@@ -90,6 +90,29 @@ jobs:
         # Relies on bundler-cache from setup-ruby step
         run: bundle check || bundle install --jobs 4 --retry 3
 
+      - name: Wait for Service DNS and Port
+        run: |
+          echo "Waiting for postgres service DNS and port..."
+          # Loop until DNS resolves and port is connectable
+          count=0
+          while ! nc -zv postgres 5432 && [ $count -lt 15 ]; do
+            echo "Postgres service not ready yet (DNS or Port 5432)... attempt: $((count+1))/15"
+            sleep 2 # Wait 2 seconds before retrying
+            count=$((count+1))
+          done
+
+          if [ $count -eq 15 ]; then
+            echo "Timed out waiting for postgres service!"
+            echo "--- Attempting DNS lookup ---"
+            nslookup postgres || echo "nslookup failed"
+            dig postgres || echo "dig failed"
+            getent hosts postgres || echo "getent failed"
+            echo "--- Checking port again ---"
+            nc -zv postgres 5432 || echo "Netcat check still failing"
+            exit 1
+          fi
+          echo "Postgres service DNS resolved and port 5432 is open."
+
       - name: Run Database Migrations
         working-directory: ./openstreetmap-website
         # Assumes `rails db:migrate` runs in 'development' env by default, using the config created above.
