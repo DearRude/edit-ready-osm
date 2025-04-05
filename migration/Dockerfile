@@ -1,5 +1,5 @@
 # Example: postgis/postgis:16-3.4 uses PG16, postgis/postgis:13-3.4 uses PG13
-FROM postgis/postgis:13-3.4 AS final
+FROM postgis/postgis:16-3.4 AS final
 
 LABEL maintainer="Ebrahim Nejati <ebrahim@nejati.net>"
 LABEL description="Pre-migrated PostGIS image for OpenStreetMap Website"
@@ -77,7 +77,7 @@ CMD []
 # Let's modify the structure slightly:
 
 # STAGE 1: Build and Migrate (as above)
-FROM postgis/postgis:13-3.4 AS builder
+FROM postgis/postgis:16-3.4 AS builder
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
