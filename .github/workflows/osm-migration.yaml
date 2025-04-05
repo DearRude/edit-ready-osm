@@ -45,20 +45,10 @@ jobs:
       - name: Install System Dependencies (Git, Postgres Client)
         run: |
           sudo apt-get update -y && sudo apt-get install -y --no-install-recommends \
-            build-essential \
-            git-core \
-            libvips-dev \
-            libxml2-dev \
-            libxslt1-dev \
+            git \
             postgresql-client \
-            libpq-dev \
-            libsasl2-dev \
-            libffi-dev \
-            libgd-dev \
-            libarchive-dev \
-            libyaml-dev \
-            libbz2-dev
-            
+            libpq-dev
+
       - name: Clone OpenStreetMap Website
         run: git clone --depth=1 https://github.com/openstreetmap/openstreetmap-website.git
 
@@ -97,6 +87,9 @@ jobs:
           cat config/database.yml # Print the generated file content to the log for verification
           echo "-------------------------------------"
 
+      - name: Install Ruby Dependencies
+        working-directory: ./openstreetmap-website
+        run: bundle check || bundle install --jobs 4 --retry 3
 
       - name: Run Database Migrations
         working-directory: ./openstreetmap-website
